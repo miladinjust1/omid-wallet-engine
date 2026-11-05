@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111318">
+<title>OMID WALLET ENGINE</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px 15px 40px;
+ background:#101217;color:#f4f5f7;
+ font-family:Tahoma,Arial,sans-serif
+}
+main{max-width:600px;margin:auto}
+header{display:flex;align-items:center;gap:12px;margin:12px 0 25px}
+.logo{
+ width:48px;height:48px;border-radius:15px;
+ background:linear-gradient(135deg,#ff9b36,#e85d0c);
+ display:grid;place-items:center;font-size:25px;
+ font-weight:bold;color:#111
+}
+h1{font-size:17px;margin:0}
+header p{font-size:10px;color:#aaa;letter-spacing:2px}
+.card{
+ background:#1b2029;border:1px solid #303846;
+ border-radius:18px;padding:18px;margin-bottom:15px
+}
+h2{font-size:15px;margin:0 0 17px}
+.info{
+ display:flex;justify-content:space-between;gap:12px;
+ padding:11px 0;border-bottom:1px solid #ffffff12;
+ font-size:12px
+}
+.info span:first-child{color:#9aa4b2}
+.value{direction:ltr;text-align:left;overflow-wrap:anywhere}
+.balance{
+ direction:ltr;text-align:left;font-size:25px;
+ font-weight:bold;margin:9px 0 20px
+}
+.unit{font-size:12px;color:#9aa4b2}
+input{
+ width:100%;padding:14px;border-radius:11px;
+ border:1px solid #394352;background:#10151c;
+ color:white;direction:ltr;text-align:left;margin-top:9px
+}
+button{
+ width:100%;padding:14px;border:0;border-radius:12px;
+ background:#f47714;color:#171717;font-weight:bold;
+ font-size:14px;margin-top:10px
+}
+button.secondary{background:#303947;color:white}
+button:disabled{opacity:.4}
+.status{
+ background:#111720;border:1px solid #303846;
+ border-radius:12px;padding:12px;font-size:12px;
+ line-height:2;white-space:pre-wrap;overflow-wrap:anywhere
+}
+.note{font-size:11px;color:#aab2bf;line-height:2}
+.orange{color:#ffb36e}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+ <div class="logo">O</div>
+ <div>
+  <h1>OMID WALLET ENGINE</h1>
+  <p>TRON WALLET CONNECTION</p>
+ </div>
+</header>
+
+<section class="card">
+ <h2>اتصال به کیف پول</h2>
+
+ <div class="info">
+  <span>وضعیت</span>
+  <strong id="connection">متصل نیست</strong>
+ </div>
+
+ <div class="info">
+  <span>شبکه</span>
+  <strong id="network" class="value">نامشخص</strong>
+ </div>
+
+ <div class="info">
+  <span>آدرس کیف پول</span>
+  <strong id="address" class="value">---</strong>
+ </div>
+
+ <button id="connect">اتصال به Trust Wallet</button>
+ <button id="refresh" class="secondary" disabled>
+  به‌روزرسانی موجودی
+ </button>
+</section>
+
+<section class="card">
+ <h2>موجودی حساب</h2>
+
+ <div class="unit">موجودی TRX</div>
+ <div id="trx" class="balance">---</div>
+
+ <div class="unit">موجودی USDT TRC20</div>
+ <div id="usdt" class="balance">---</div>
+</section>
+
+<section class="card">
+ <h2>آزمایش امضای تراکنش</h2>
+
+ <div class="unit">آدرس مقصد آزمایشی</div>
+ <input id="recipient" placeholder="T...">
+
+ <button id="sign" disabled>
+  درخواست امضای آزمایشی 1 SUN
+ </button>
+
+ <p class="note orange">
+ این قسمت فقط روی شبکه آزمایشی فعال می‌شود.
+ تراکنش امضاشده به شبکه ارسال نمی‌شود.
+ </p>
+</section>
+
+<section class="card">
+ <h2>گزارش موتور</h2>
+ <div id="log" class="status">موتور آماده است.</div>
+ <button id="clear" class="secondary">پاک کردن گزارش</button>
+</section>
+
+<p class="note">
+ امنیت: این موتور عبارت بازیابی و کلید خصوصی درخواست نمی‌کند.
+ اطلاعات محرمانه کیف پول را در هیچ سایتی وارد نکن.
+</p>
+
+</main>
+
+<script type="module">
+
+const $ = id => document.getElementById(id);
+
+const USDT_CONTRACT =
+"TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj";
+
+let adapter = null;
+let tronWeb = null;
+let activeAddress = null;
+let testnet = false;
+
+function report(message){
+ $("log").textContent =
+ new Date().toLocaleTimeString()+
+ " | "+message+"\n"+$("log").textContent;
+}
+
+function provider(){
+ return window.trustwallet?.tron ||
+ window.trustwallet?.tronLink ||
+ window.tron ||
+ window.tronLink ||
+ null;
+}
+
+async function connectWallet(){
+
+ $("connect").disabled = true;
+
+ try{
+
+  const module = await import(
+   "https://esm.sh/@tronweb3/tronwallet-adapter-trust@1.3.0"
+  );
+
+  const TrustAdapter =
+   module.TrustAdapter || module.default;
+
+  adapter = new TrustAdapter({
+   openUrlWhenWalletNotFound:false,
+   openAppWithDeeplink:false
+  });
+
+  await adapter.connect();
+
+  activeAddress = adapter.address;
+
+  if(!activeAddress)
+   throw new Error("آدرس کیف پول دریافت نشد.");
+
+  const p = provider();
+
+  tronWeb =
+   p?.tronWeb ||
+   p?.tronWebInstance ||
+   window.tronWeb;
+
+  if(!tronWeb)
+   throw new Error(
+    "TronWeb در دسترس نیست. صفحه را داخل مرورگر DApps تراست‌ولت باز کن."
+   );
+
+  $("address").textContent = activeAddress;
+  $("connection").textContent = "متصل";
+
+  let net = "نامشخص";
+
+  try{
+   const n = await adapter.network();
+   net = typeof n === "string"
+    ? n
+    : n?.name || n?.fullNode?.host || JSON.stringify(n);
+  }catch(e){}
+
+  const host = String(
+   tronWeb.fullNode?.host || ""
+  ).toLowerCase();
+
+  testnet = /nile|shasta/i.test(host+" "+net);
+
+  $("network").textContent = net;
+
+  $("refresh").disabled = false;
+  $("sign").disabled = !testnet;
+
+  report("اتصال برقرار شد: "+net);
+
+  await refreshBalances();
+
+  if(!testnet)
+   report("امضای آزمایشی فقط روی شبکه تست فعال است.");
+
+ }catch(e){
+
+  $("connection").textContent = "خطا";
+  report("خطا: "+(e.message || e));
+  alert(e.message || e);
+
+ }finally{
+  $("connect").disabled = false;
+ }
+}
+
+async function refreshBalances(){
+
+ if(!tronWeb || !activeAddress)
+  throw new Error("ابتدا کیف پول را متصل کن.");
+
+ const sun = await tronWeb.trx.getBalance(activeAddress);
+
+ $("trx").textContent =
+ (Number(sun)/1000000).toLocaleString("en-US")+
+ " TRX";
+
+ try{
+
+  const contract =
+   await tronWeb.contract().at(USDT_CONTRACT);
+
+  const raw =
+   await contract.balanceOf(activeAddress).call();
+
+  $("usdt").textContent =
+   (Number(raw.toString())/1000000)
+   .toLocaleString("en-US")+" USDT";
+
+ }catch(e){
+
+  $("usdt").textContent = "خطا در دریافت";
+
+ }
+
+ report("موجودی به‌روزرسانی شد.");
+}
+
+async function signTest(){
+
+ try{
+
+  if(!testnet)
+   throw new Error("فقط شبکه آزمایشی مجاز است.");
+
+  const recipient =
+   $("recipient").value.trim();
+
+  if(!tronWeb.isAddress(recipient))
+   throw new Error("آدرس مقصد معتبر نیست.");
+
+  const tx =
+   await tronWeb.transactionBuilder.sendTrx(
+    recipient,1,activeAddress
+   );
+
+  const signed =
+   await adapter.signTransaction(tx);
+
+  report(
+   "امضا دریافت شد. شناسه: "+
+   (signed.txID || "نامشخص")+
+   " — تراکنش ارسال نشد."
+  );
+
+  alert("امضا دریافت شد؛ هیچ تراکنشی ارسال نشد.");
+
+ }catch(e){
+
+  report("خطای امضا: "+(e.message || e));
+  alert(e.message || e);
+
+ }
+}
+
+$("connect").addEventListener("click",connectWallet);
+
+$("refresh").addEventListener("click",()=>{
+ refreshBalances().catch(e=>report(e.message));
+});
+
+$("sign").addEventListener("click",signTest);
+
+$("clear").addEventListener("click",()=>{
+ $("log").textContent = "گزارش پاک شد.";
+});
+
+</script>
+</body>
+</html>
