@@ -3,178 +3,169 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#111318">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101217">
 <title>OMID WALLET ENGINE</title>
-
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;padding:20px 15px 40px;
- background:#101217;color:#f4f5f7;
- font-family:Tahoma,Arial,sans-serif
-}
-main{max-width:600px;margin:auto}
-header{display:flex;align-items:center;gap:12px;margin:12px 0 25px}
-.logo{
- width:48px;height:48px;border-radius:15px;
- background:linear-gradient(135deg,#ff9b36,#e85d0c);
- display:grid;place-items:center;font-size:25px;
- font-weight:bold;color:#111
-}
+body{margin:0;padding:18px;background:#101217;color:#f5f5f5;font-family:Tahoma,Arial}
+main{max-width:620px;margin:auto}
+header{display:flex;align-items:center;gap:12px;margin:10px 0 22px}
+.logo{width:48px;height:48px;border-radius:15px;background:#f47714;color:#111;display:grid;place-items:center;font-size:25px;font-weight:bold}
 h1{font-size:17px;margin:0}
-header p{font-size:10px;color:#aaa;letter-spacing:2px}
-.card{
- background:#1b2029;border:1px solid #303846;
- border-radius:18px;padding:18px;margin-bottom:15px
-}
-h2{font-size:15px;margin:0 0 17px}
-.info{
- display:flex;justify-content:space-between;gap:12px;
- padding:11px 0;border-bottom:1px solid #ffffff12;
- font-size:12px
-}
-.info span:first-child{color:#9aa4b2}
+h2{font-size:15px;margin:0 0 15px}
+.sub{color:#999;font-size:10px;margin-top:5px}
+.card{background:#1b2029;border:1px solid #303846;border-radius:17px;padding:17px;margin-bottom:14px}
+.line{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #ffffff12;font-size:12px}
+.line span:first-child{color:#9aa4b2}
 .value{direction:ltr;text-align:left;overflow-wrap:anywhere}
-.balance{
- direction:ltr;text-align:left;font-size:25px;
- font-weight:bold;margin:9px 0 20px
-}
+.balance{font-size:25px;font-weight:bold;direction:ltr;text-align:left;margin:8px 0 17px}
 .unit{font-size:12px;color:#9aa4b2}
-input{
- width:100%;padding:14px;border-radius:11px;
- border:1px solid #394352;background:#10151c;
- color:white;direction:ltr;text-align:left;margin-top:9px
-}
-button{
- width:100%;padding:14px;border:0;border-radius:12px;
- background:#f47714;color:#171717;font-weight:bold;
- font-size:14px;margin-top:10px
-}
+input,select{width:100%;padding:13px;background:#10151c;border:1px solid #394352;border-radius:11px;color:white;margin:8px 0 14px;font-size:13px}
+input{direction:ltr;text-align:left}
+label{font-size:12px;color:#b5bdc9}
+button{width:100%;padding:14px;border:0;border-radius:11px;background:#f47714;color:#111;font-weight:bold;font-size:14px;margin-top:8px}
 button.secondary{background:#303947;color:white}
 button:disabled{opacity:.4}
-.status{
- background:#111720;border:1px solid #303846;
- border-radius:12px;padding:12px;font-size:12px;
- line-height:2;white-space:pre-wrap;overflow-wrap:anywhere
-}
+.status{background:#111720;border:1px solid #303846;border-radius:11px;padding:12px;font-size:12px;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere}
 .note{font-size:11px;color:#aab2bf;line-height:2}
-.orange{color:#ffb36e}
+.warning{color:#ffbd75}
+.green{color:#24c78a}
 </style>
 </head>
-
 <body>
 <main>
 
 <header>
- <div class="logo">O</div>
- <div>
-  <h1>OMID WALLET ENGINE</h1>
-  <p>TRON WALLET CONNECTION</p>
- </div>
+<div class="logo">O</div>
+<div>
+<h1>OMID WALLET ENGINE</h1>
+<div class="sub">TRON MAINNET TRANSACTION ENGINE</div>
+</div>
 </header>
 
 <section class="card">
- <h2>اتصال به کیف پول</h2>
-
- <div class="info">
-  <span>وضعیت</span>
-  <strong id="connection">متصل نیست</strong>
- </div>
-
- <div class="info">
-  <span>شبکه</span>
-  <strong id="network" class="value">نامشخص</strong>
- </div>
-
- <div class="info">
-  <span>آدرس کیف پول</span>
-  <strong id="address" class="value">---</strong>
- </div>
-
- <button id="connect">اتصال به Trust Wallet</button>
- <button id="refresh" class="secondary" disabled>
-  به‌روزرسانی موجودی
- </button>
+<h2>اتصال کیف پول</h2>
+<div class="line"><span>وضعیت</span><b id="connection">قطع</b></div>
+<div class="line"><span>شبکه</span><b id="network">نامشخص</b></div>
+<div class="line"><span>آدرس</span><b id="address" class="value">---</b></div>
+<button id="connect">اتصال به Trust Wallet</button>
+<button id="refresh" class="secondary" disabled>به‌روزرسانی اطلاعات</button>
 </section>
 
 <section class="card">
- <h2>موجودی حساب</h2>
-
- <div class="unit">موجودی TRX</div>
- <div id="trx" class="balance">---</div>
-
- <div class="unit">موجودی USDT TRC20</div>
- <div id="usdt" class="balance">---</div>
+<h2>موجودی واقعی</h2>
+<div class="unit">TRX</div>
+<div id="trx" class="balance">---</div>
+<div class="unit">USDT TRC20</div>
+<div id="usdt" class="balance">---</div>
+<div class="line"><span>منبع اطلاعات</span><b>TRON Mainnet</b></div>
 </section>
 
 <section class="card">
- <h2>آزمایش امضای تراکنش</h2>
-
- <div class="unit">آدرس مقصد آزمایشی</div>
- <input id="recipient" placeholder="T...">
-
- <button id="sign" disabled>
-  درخواست امضای آزمایشی 1 SUN
- </button>
-
- <p class="note orange">
- این قسمت فقط روی شبکه آزمایشی فعال می‌شود.
- تراکنش امضاشده به شبکه ارسال نمی‌شود.
- </p>
+<h2>بررسی مجوزهای حساب</h2>
+<div id="permissions" class="status">ابتدا کیف پول را متصل کن.</div>
 </section>
 
 <section class="card">
- <h2>گزارش موتور</h2>
- <div id="log" class="status">موتور آماده است.</div>
- <button id="clear" class="secondary">پاک کردن گزارش</button>
+<h2>انتقال دارایی</h2>
+
+<label>نوع دارایی</label>
+<select id="asset">
+<option value="TRX">TRX</option>
+<option value="USDT">USDT TRC20</option>
+</select>
+
+<label>آدرس مقصد</label>
+<input id="to" placeholder="T...">
+
+<label>مقدار انتقال</label>
+<input id="amount" type="number" min="0" step="any" placeholder="مثلاً 10">
+
+<div class="line"><span>شبکه</span><b>TRON Mainnet</b></div>
+<div class="line"><span>کارمزد</span><b>وابسته به منابع شبکه</b></div>
+
+<button id="preview" disabled>بررسی و پیش‌نمایش انتقال</button>
+<div id="previewBox" class="status" style="margin-top:12px">هنوز تراکنشی آماده نشده است.</div>
+<button id="send" disabled>تأیید و درخواست امضا</button>
+
+<p class="note warning">
+انتقال روی شبکه اصلی واقعی و برگشت‌ناپذیر است. قبل از امضا، آدرس مقصد و مقدار را دقیق بررسی کن.
+</p>
+</section>
+
+<section class="card">
+<h2>پیگیری تراکنش</h2>
+<div id="txstatus" class="status">هنوز تراکنشی ارسال نشده است.</div>
+</section>
+
+<section class="card">
+<h2>گزارش موتور</h2>
+<div id="log" class="status">موتور آماده است.</div>
+<button id="clear" class="secondary">پاک کردن گزارش</button>
 </section>
 
 <p class="note">
- امنیت: این موتور عبارت بازیابی و کلید خصوصی درخواست نمی‌کند.
- اطلاعات محرمانه کیف پول را در هیچ سایتی وارد نکن.
+این برنامه هیچ Seed Phrase یا کلید خصوصی دریافت نمی‌کند.
+امضا باید در خود Trust Wallet انجام شود.
 </p>
 
 </main>
 
 <script type="module">
 
-const $ = id => document.getElementById(id);
+import { TrustAdapter } from
+"https://esm.sh/@tronweb3/tronwallet-adapter-trust@1.3.0";
+
+import { TronWeb } from
+"https://esm.sh/tronweb@6.0.4";
+
+const API = "https://api.trongrid.io";
 
 const USDT_CONTRACT =
 "TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj";
 
+const FEE_LIMIT = 100000000;
+
+const $ = id => document.getElementById(id);
+
 let adapter = null;
 let tronWeb = null;
-let activeAddress = null;
-let testnet = false;
+let address = null;
+let prepared = null;
+let tokenDecimals = 6;
 
-function report(message){
+function log(s){
  $("log").textContent =
- new Date().toLocaleTimeString()+
- " | "+message+"\n"+$("log").textContent;
+ new Date().toLocaleTimeString()+" | "+s+"\n"+
+ $("log").textContent;
 }
 
-function provider(){
- return window.trustwallet?.tron ||
- window.trustwallet?.tronLink ||
- window.tron ||
- window.tronLink ||
- null;
+async function api(path,body=null){
+ const options = body === null ? {} : {
+ method:"POST",
+ headers:{"Content-Type":"application/json"},
+ body:JSON.stringify(body)
+ };
+
+ const response = await fetch(API+path,options);
+ const data = await response.json();
+
+ if(!response.ok)
+ throw new Error(data?.Error || data?.message || "خطای ارتباط با شبکه");
+
+ return data;
 }
 
-async function connectWallet(){
+function validAddress(a){
+ return TronWeb.isAddress(a);
+}
 
- $("connect").disabled = true;
+async function connect(){
 
  try{
 
-  const module = await import(
-   "https://esm.sh/@tronweb3/tronwallet-adapter-trust@1.3.0"
-  );
-
-  const TrustAdapter =
-   module.TrustAdapter || module.default;
+  $("connect").disabled = true;
 
   adapter = new TrustAdapter({
    openUrlWhenWalletNotFound:false,
@@ -183,144 +174,397 @@ async function connectWallet(){
 
   await adapter.connect();
 
-  activeAddress = adapter.address;
+  address = adapter.address;
 
-  if(!activeAddress)
-   throw new Error("آدرس کیف پول دریافت نشد.");
+  if(!address || !validAddress(address))
+   throw new Error("آدرس کیف پول معتبر دریافت نشد.");
 
-  const p = provider();
+  const provider =
+   window.trustwallet?.tron ||
+   window.trustwallet?.tronLink ||
+   window.tron ||
+   window.tronLink;
 
-  tronWeb =
-   p?.tronWeb ||
-   p?.tronWebInstance ||
-   window.tronWeb;
+  if(!provider)
+   throw new Error("ارائه‌دهنده TRON کیف پول پیدا نشد.");
 
-  if(!tronWeb)
-   throw new Error(
-    "TronWeb در دسترس نیست. صفحه را داخل مرورگر DApps تراست‌ولت باز کن."
-   );
+  tronWeb = new TronWeb({
+   fullHost:API
+  });
 
-  $("address").textContent = activeAddress;
+  $("address").textContent = address;
   $("connection").textContent = "متصل";
-
-  let net = "نامشخص";
-
-  try{
-   const n = await adapter.network();
-   net = typeof n === "string"
-    ? n
-    : n?.name || n?.fullNode?.host || JSON.stringify(n);
-  }catch(e){}
-
-  const host = String(
-   tronWeb.fullNode?.host || ""
-  ).toLowerCase();
-
-  testnet = /nile|shasta/i.test(host+" "+net);
-
-  $("network").textContent = net;
-
+  $("network").textContent = "TRON Mainnet";
+  $("preview").disabled = false;
   $("refresh").disabled = false;
-  $("sign").disabled = !testnet;
 
-  report("اتصال برقرار شد: "+net);
+  log("اتصال کیف پول برقرار شد.");
 
-  await refreshBalances();
-
-  if(!testnet)
-   report("امضای آزمایشی فقط روی شبکه تست فعال است.");
+  await refreshAll();
 
  }catch(e){
 
-  $("connection").textContent = "خطا";
-  report("خطا: "+(e.message || e));
-  alert(e.message || e);
+  log("خطای اتصال: "+e.message);
+  alert(e.message);
 
  }finally{
+
   $("connect").disabled = false;
+
  }
 }
 
-async function refreshBalances(){
+async function refreshAll(){
 
- if(!tronWeb || !activeAddress)
-  throw new Error("ابتدا کیف پول را متصل کن.");
+ if(!address) throw new Error("کیف پول متصل نیست.");
 
- const sun = await tronWeb.trx.getBalance(activeAddress);
+ await Promise.all([
+  getBalances(),
+  getPermissions()
+ ]);
+
+ log("اطلاعات حساب به‌روزرسانی شد.");
+}
+
+async function getBalances(){
+
+ const data = await api("/v1/accounts/"+address);
+
+ if(!data.data || !data.data.length)
+ throw new Error("اطلاعات حساب از شبکه دریافت نشد.");
+
+ const account = data.data[0];
+
+ const trx = Number(account.balance || 0)/1e6;
 
  $("trx").textContent =
- (Number(sun)/1000000).toLocaleString("en-US")+
- " TRX";
+ trx.toLocaleString("en-US",{maximumFractionDigits:6})+" TRX";
 
- try{
+ const tokens = account.trc20 || {};
+ const raw = tokens[USDT_CONTRACT];
 
-  const contract =
-   await tronWeb.contract().at(USDT_CONTRACT);
+ let amount = 0;
 
-  const raw =
-   await contract.balanceOf(activeAddress).call();
+ if(raw !== undefined){
 
-  $("usdt").textContent =
-   (Number(raw.toString())/1000000)
-   .toLocaleString("en-US")+" USDT";
+  const value = Array.isArray(raw) ? raw[0] : raw;
 
- }catch(e){
-
-  $("usdt").textContent = "خطا در دریافت";
+  amount = Number(value)/Math.pow(10,tokenDecimals);
 
  }
 
- report("موجودی به‌روزرسانی شد.");
+ $("usdt").textContent =
+ amount.toLocaleString("en-US",{maximumFractionDigits:6})+" USDT";
+
 }
 
-async function signTest(){
+async function getPermissions(){
+
+ const data = await api("/wallet/getaccount",{
+ address:address,
+ visible:true
+ });
+
+ if(!data.address){
+
+  $("permissions").textContent =
+  "اطلاعات مجوز حساب دریافت نشد.";
+  return;
+
+ }
+
+ function showPermission(p){
+
+  if(!p) return "وجود ندارد";
+
+  const keys = (p.keys || []).map(k=>
+   k.address+" | وزن "+k.weight
+  ).join("\n");
+
+  return "آستانه: "+p.threshold+
+  "\nکلیدها:\n"+keys;
+
+ }
+
+ $("permissions").textContent =
+ "OWNER\n"+showPermission(data.owner_permission)+
+ "\n\nACTIVE\n"+
+ (data.active_permission || []).map(p=>
+ "ID: "+p.id+"\n"+
+ "نام: "+(p.permission_name || "-")+
+ "\nآستانه: "+p.threshold+
+ "\nکلیدها:\n"+
+ (p.keys || []).map(k=>k.address+" وزن "+k.weight).join("\n")
+ ).join("\n\n");
+
+}
+
+function amountToUnits(value,decimals){
+
+ const n = Number(value);
+
+ if(!Number.isFinite(n) || n<=0)
+ throw new Error("مقدار انتقال معتبر نیست.");
+
+ const parts = String(value).split(".");
+
+ if(parts[1] && parts[1].length>decimals)
+ throw new Error("تعداد ارقام اعشار بیش از حد مجاز است.");
+
+ return BigInt(Math.round(n*Math.pow(10,decimals))).toString();
+
+}
+
+async function prepareTransfer(){
 
  try{
 
-  if(!testnet)
-   throw new Error("فقط شبکه آزمایشی مجاز است.");
+  prepared = null;
+  $("send").disabled = true;
 
-  const recipient =
-   $("recipient").value.trim();
+  const to = $("to").value.trim();
+  const amount = $("amount").value;
+  const asset = $("asset").value;
 
-  if(!tronWeb.isAddress(recipient))
-   throw new Error("آدرس مقصد معتبر نیست.");
+  if(!validAddress(to))
+  throw new Error("آدرس مقصد معتبر نیست.");
 
-  const tx =
-   await tronWeb.transactionBuilder.sendTrx(
-    recipient,1,activeAddress
+  if(to===address)
+  throw new Error("آدرس مقصد و مبدأ یکسان هستند.");
+
+  const decimals = asset==="TRX" ? 6 : tokenDecimals;
+  const units = amountToUnits(amount,decimals);
+
+  const accountData = await api("/v1/accounts/"+address);
+  const account = accountData.data?.[0];
+
+  if(!account)
+  throw new Error("حساب مبدأ پیدا نشد.");
+
+  if(asset==="TRX"){
+
+   const balance = BigInt(account.balance || 0);
+
+   if(balance<BigInt(units))
+   throw new Error("موجودی TRX برای این انتقال کافی نیست.");
+
+  }else{
+
+   const tokens = account.trc20 || {};
+   const raw = tokens[USDT_CONTRACT];
+
+   const current = BigInt(
+    raw === undefined ? "0" :
+    Array.isArray(raw) ? raw[0] : raw
    );
 
-  const signed =
-   await adapter.signTransaction(tx);
+   if(current<BigInt(units))
+   throw new Error("موجودی USDT کافی نیست.");
 
-  report(
-   "امضا دریافت شد. شناسه: "+
-   (signed.txID || "نامشخص")+
-   " — تراکنش ارسال نشد."
-  );
+  }
 
-  alert("امضا دریافت شد؛ هیچ تراکنشی ارسال نشد.");
+  prepared = {to,amount,asset,units};
+
+  $("previewBox").textContent =
+  "مبدأ: "+address+
+  "\nمقصد: "+to+
+  "\nدارایی: "+asset+
+  "\nمقدار: "+amount+
+  "\nشبکه: TRON Mainnet"+
+  "\nکارمزد: بسته به منابع و وضعیت شبکه";
+
+  $("send").disabled = false;
+
+  log("اطلاعات انتقال بررسی شد.");
 
  }catch(e){
 
-  report("خطای امضا: "+(e.message || e));
-  alert(e.message || e);
+  prepared = null;
+  $("send").disabled = true;
+  $("previewBox").textContent = e.message;
+  log("خطای بررسی: "+e.message);
 
  }
 }
 
-$("connect").addEventListener("click",connectWallet);
+async function broadcast(transaction){
 
-$("refresh").addEventListener("click",()=>{
- refreshBalances().catch(e=>report(e.message));
-});
+ const result = await api(
+  "/wallet/broadcasttransaction",
+  transaction
+ );
 
-$("sign").addEventListener("click",signTest);
+ if(result.result !== true)
+ throw new Error(result.message || result.code || "شبکه تراکنش را نپذیرفت.");
 
-$("clear").addEventListener("click",()=>{
- $("log").textContent = "گزارش پاک شد.";
-});
+ return result;
+}
+
+async function sendTransfer(){
+
+ if(!prepared)
+ throw new Error("ابتدا پیش‌نمایش انتقال را انجام بده.");
+
+ const p = prepared;
+
+ const accepted = confirm(
+  "انتقال واقعی روی شبکه اصلی TRON\n\n"+
+  "دارایی: "+p.asset+
+  "\nمقدار: "+p.amount+
+  "\nمقصد: "+p.to+
+  "\n\nآیا برای درخواست امضا ادامه می‌دهی؟"
+ );
+
+ if(!accepted) return;
+
+ $("send").disabled = true;
+
+ try{
+
+  let unsigned;
+
+  if(p.asset==="TRX"){
+
+   unsigned = await tronWeb.transactionBuilder.sendTrx(
+    p.to,
+    Number(p.units),
+    address
+   );
+
+  }else{
+
+   const result =
+   await tronWeb.transactionBuilder.triggerSmartContract(
+    USDT_CONTRACT,
+    "transfer(address,uint256)",
+    {
+     feeLimit:FEE_LIMIT,
+     callValue:0
+    },
+    [
+     {type:"address",value:p.to},
+     {type:"uint256",value:p.units}
+    ],
+    address
+   );
+
+   if(!result.result?.result)
+   throw new Error("ساخت تراکنش USDT ناموفق بود.");
+
+   unsigned = result.transaction;
+
+  }
+
+  if(!unsigned || !unsigned.txID)
+  throw new Error("تراکنش ساخته نشد.");
+
+  $("txstatus").textContent =
+  "تراکنش ساخته شد.\nدر انتظار تأیید کیف پول برای امضا...";
+
+  const signed = await adapter.signTransaction(unsigned);
+
+  if(!signed.signature || !signed.signature.length)
+  throw new Error("امضای معتبر دریافت نشد.");
+
+  $("txstatus").textContent =
+  "امضا دریافت شد.\nدر حال ارسال به FullNode...";
+
+  const sent = await broadcast(signed);
+
+  const txid = signed.txID || unsigned.txID;
+
+  $("txstatus").textContent =
+  "ارسال به شبکه پذیرفته شد.\n"+
+  "TXID: "+txid+
+  "\nدر انتظار تأیید بلاک...";
+
+  log("ارسال پذیرفته شد: "+txid);
+
+  await monitor(txid);
+
+ }catch(e){
+
+  $("txstatus").textContent =
+  "تراکنش تکمیل نشد:\n"+e.message;
+
+  log("خطای تراکنش: "+e.message);
+
+ }finally{
+
+  prepared = null;
+  $("send").disabled = true;
+
+ }
+}
+
+async function monitor(txid){
+
+ for(let i=0;i<30;i++){
+
+  await new Promise(resolve=>setTimeout(resolve,5000));
+
+  try{
+
+   const info = await api(
+    "/walletsolidity/gettransactioninfobyid",
+    {value:txid}
+   );
+
+   if(info.id){
+
+    if(info.receipt?.result &&
+       info.receipt.result!=="SUCCESS"){
+
+     $("txstatus").textContent =
+     "تراکنش در بلاک قرار گرفت اما اجرای قرارداد ناموفق بود.\n"+
+     "وضعیت: "+info.receipt.result+
+     "\nTXID: "+txid;
+
+     return;
+    }
+
+    $("txstatus").textContent =
+    "تراکنش در زنجیره تأییدشده پیدا شد.\n"+
+    "وضعیت اجرا: "+(info.receipt?.result || "ثبت شده")+
+    "\nTXID: "+txid;
+
+    log("تراکنش در زنجیره تأییدشده مشاهده شد.");
+
+    await refreshAll();
+
+    return;
+   }
+
+  }catch(e){}
+
+  $("txstatus").textContent =
+  "تراکنش هنوز تأیید نهایی نشده است.\n"+
+  "در حال بررسی...\nTXID: "+txid;
+
+ }
+
+ $("txstatus").textContent =
+ "پاسخ نهایی هنوز دریافت نشده است.\n"+
+ "خودت TXID را در Tronscan بررسی کن:\n"+
+ "https://tronscan.org/#/transaction/"+txid;
+
+}
+
+$("connect").onclick=connect;
+
+$("refresh").onclick=()=>{
+ refreshAll().catch(e=>log(e.message));
+};
+
+$("preview").onclick=prepareTransfer;
+
+$("send").onclick=()=>{
+ sendTransfer().catch(e=>log(e.message));
+};
+
+$("clear").onclick=()=>{
+ $("log").textContent="گزارش پاک شد.";
+};
 
 </script>
 </body>
